@@ -1,21 +1,7 @@
-venv/
-output/
+SadTalker/
+sadtalker_env/
+resultados_finales/
+video_completo.mp4
+*.mp4
+*.wav
 __pycache__/
-*.pyc
-.DS_Store
-.vercel
-client_secret.json
-youtube_token.pkl
-test_gemini.py
-scripts/
-.jobs/
-*.env
-database.sqlite
-logs/
-
-# Docker volumes & Secrets
-models/
-n8n_data/
-postgres_data/
-redis_data/
-.env

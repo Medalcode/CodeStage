@@ -1,4 +1,0 @@
-# Compose scripts dependencies (host-side)
-edge-tts
-faster-whisper
-imageio-ffmpeg

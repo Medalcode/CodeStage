@@ -1,0 +1,5 @@
+Hola a todos. Bienvenidos a este nuevo canal de YouTube.
+
+El día de hoy aprenderemos cómo automatizar la creación de avatares hablantes generados por inteligencia artificial usando SadTalker y una RTX 4060.
+
+Como ven, mi voz está siendo generada por texto, y mis labios se sincronizan automáticamente gracias a la IA. Todo esto de forma local y sin pagar costosas suscripciones.
