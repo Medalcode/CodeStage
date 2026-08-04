@@ -5,3 +5,6 @@ video_completo.mp4
 *.mp4
 *.wav
 __pycache__/
+graphify-out/
+.pytest_cache/
+*.pyc

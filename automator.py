@@ -2,54 +2,29 @@ import os
 import subprocess
 import time
 import sys
-import time
+from pathlib import Path
+
+from utils import split_script, generate_audio, ensure_dir, DEFAULT_VOICE
 
 # ==========================================
 # CONFIGURACIÓN
 # ==========================================
-# Las rutas asumen que este script se ejecuta dentro de la carpeta SadTalker
-GUION_FILE = "../guion.txt"           # Tu archivo de texto con el guion (arriba un nivel)
-IMAGE_FILE = "../avatar.png"          # La imagen de tu personaje (arriba un nivel)
-OUTPUT_DIR = "../resultados_finales"  # Carpeta donde se guardará todo (arriba un nivel)
+# Las rutas asumen ejecución desde la carpeta SadTalker o raíz
+GUION_FILE = "../guion.txt" if os.path.exists("../guion.txt") else "guion.txt"
+IMAGE_FILE = "../avatar.png" if os.path.exists("../avatar.png") else "avatar.png"
+OUTPUT_DIR = "../resultados_finales" if os.path.exists("../guion.txt") else "resultados_finales"
+VOICE = DEFAULT_VOICE
 
-# Voz de Microsoft Edge TTS (Ejemplo: voz femenina de México, también puede ser es-ES-ElviraNeural)
-VOICE = "es-MX-DaliaNeural"
-
-def split_script(file_path):
-    """Divide el guion en bloques basados en dobles saltos de línea."""
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"No se encontró el archivo: {file_path}")
-        
-    with open(file_path, 'r', encoding='utf-8') as f:
-        text = f.read()
-    
-    # Separar por párrafos y limpiar espacios en blanco
-    chunks = [chunk.strip() for chunk in text.split('\n\n') if chunk.strip()]
-    return chunks
-
-def generate_audio(text, index):
-    """Genera el archivo de audio usando edge-tts."""
-    audio_filename = f"audio_{index:03d}.wav"
-    audio_path = os.path.join(OUTPUT_DIR, audio_filename)
-    
-    print(f"[*] Generando audio {index}...")
-    cmd = [
-        "edge-tts", 
-        "--text", text, 
-        "--voice", VOICE, 
-        "--write-media", audio_path
-    ]
-    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
-    return audio_path
-
-def run_sadtalker(audio_path, image_path, index):
+def run_sadtalker(audio_path, image_path, index, output_dir):
     """Ejecuta la inferencia de SadTalker por consola."""
-    print(f"[*] Procesando video {index} con SadTalker en la RTX 4060...")
+    print(f"[*] Procesando video {index} con SadTalker...")
     
-    # Asegurar rutas absolutas para evitar problemas con SadTalker
-    abs_audio = os.path.abspath(audio_path)
-    abs_image = os.path.abspath(image_path)
-    abs_out = os.path.abspath(OUTPUT_DIR)
+    abs_audio = str(Path(audio_path).resolve())
+    abs_image = str(Path(image_path).resolve())
+    abs_out = str(Path(output_dir).resolve())
+
+    if not Path(abs_image).exists():
+        raise FileNotFoundError(f"No se encontró la imagen de avatar en: {abs_image}")
 
     cmd = [
         sys.executable, "inference.py",
@@ -60,16 +35,15 @@ def run_sadtalker(audio_path, image_path, index):
         "--enhancer", "gfpgan"
     ]
     
-    # Ejecutamos el comando. Se mostrará el progreso de PyTorch en la consola.
     subprocess.run(cmd, check=True)
 
 def main():
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    ensure_dir(OUTPUT_DIR)
     
     try:
         chunks = split_script(GUION_FILE)
     except Exception as e:
-        print(f"[!] Error crítico: {e}")
+        print(f"[!] Error crítico cargando guion: {e}")
         return
         
     print(f"[*] Se encontraron {len(chunks)} bloques de texto para procesar.")
@@ -78,14 +52,13 @@ def main():
     for i, chunk in enumerate(chunks, 1):
         print(f"\n" + "="*40)
         print(f"--- PROCESANDO BLOQUE {i}/{len(chunks)} ---")
-        print(f"Texto: {chunk[:50]}...") # Muestra un extracto del texto
+        print(f"Texto: {chunk[:50]}...")
         print("="*40)
         
         try:
-            # 1. Generar Audio
-            audio_path = generate_audio(chunk, i)
-            # 2. Generar Video
-            run_sadtalker(audio_path, IMAGE_FILE, i)
+            audio_path = os.path.join(OUTPUT_DIR, f"audio_{i:03d}.wav")
+            generate_audio(chunk, audio_path, voice=VOICE)
+            run_sadtalker(audio_path, IMAGE_FILE, i, OUTPUT_DIR)
             
         except subprocess.CalledProcessError as e:
             print(f"[!] Error ejecutando comando en el bloque {i}: {e}")
