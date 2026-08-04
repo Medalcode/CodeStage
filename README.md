@@ -1,5 +1,7 @@
 # Canal Tutorial Automation
 
+[![CI Pipeline](https://github.com/Medalcode/canal-tutorial-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/Medalcode/canal-tutorial-automation/actions/workflows/ci.yml)
+
 Sistema automatizado en Python para generar videos de YouTube con un avatar parlante animado. Toma un guion en formato de texto (`guion.txt`) y produce un video completo con sincronización labial, parpadeo, movimiento de ojos y animación de manos, todo renderizado localmente sin necesidad de suscripciones de pago.
 
 ---
@@ -35,6 +37,13 @@ Genera animación fotorrealista a partir de una única imagen de personaje (`ava
 
 ```
 canal-tutorial-automation/
+├── .github/workflows/ci.yml       # Pipeline de CI en GitHub Actions
+├── tests/                          # Suite de pruebas automatizadas (Unit, Integration, Smoke)
+├── utils.py                        # Módulo central de utilidades (TTS, guion, paths)
+├── pyproject.toml                  # Configuración estándar del paquete Python
+├── requirements.txt                # Dependencias declarativas del proyecto
+├── CHANGELOG.md                    # Historial de cambios siguiendo Keep a Changelog
+├── .env.example                    # Plantilla de variables de entorno
 ├── run.bat                         # Punto de entrada principal (Sprite Compositing)
 ├── compositor.py                   # Renderizador del avatar 2D por capas (Sprite Compositing)
 ├── automator.py                    # Orquestador del pipeline SadTalker
@@ -93,7 +102,7 @@ cd canal-tutorial-automation
 # Crear entorno virtual e instalar dependencias
 python -m venv animator_env
 .\animator_env\Scripts\Activate.ps1
-pip install moviepy pillow numpy edge-tts
+pip install -r requirements.txt
 
 # Descargar Rhubarb Lip Sync automáticamente
 python download_rhubarb.py
@@ -117,6 +126,17 @@ docker exec -it sadtalker-env bash
 
 ---
 
+## 🧪 Pruebas Automatizadas
+
+El proyecto incluye una suite de pruebas automatizadas con `pytest`:
+
+```bash
+# Ejecutar todas las pruebas unitarias y de integración
+python -m pytest -v
+```
+
+---
+
 ## 🎮 Modo de Uso
 
 ### Generar Video con Sprite Compositing
@@ -125,67 +145,13 @@ docker exec -it sadtalker-env bash
 2. Asegúrate de tener los sprites en la carpeta `assets/` (o genera los por defecto con `python preparar_personaje.py`).
 3. Ejecuta el renderizador:
    ```powershell
-   .\animator_env\Scripts\python.exe compositor.py
+   python compositor.py
    ```
    o haz doble clic en `run.bat`.
 4. El video resultante se guardará en la raíz como `video_completo.mp4`.
-
-### Generar Video con SadTalker (IA)
-
-1. Escribe tu guion en `guion.txt`.
-2. Coloca la imagen de tu personaje como `avatar.png` en la raíz.
-3. Ejecuta el pipeline de SadTalker:
-   ```powershell
-   .\sadtalker_env\Scripts\Activate.ps1
-   cd SadTalker
-   python ..\automator.py
-   ```
-4. Une los clips generados:
-   ```powershell
-   python unir_videos.py
-   ```
-
----
-
-## 🎤 Voces Disponibles (edge-tts)
-
-La voz del narrador se configura en la variable `VOICE` dentro de `compositor.py` o `automator.py`. Ejemplo de voces en español:
-
-| Voz | Descripción / Variante |
-|-----|------------------------|
-| `es-MX-DaliaNeural` | Español México (femenino - por defecto) |
-| `es-MX-JorgeNeural` | Español México (masculino) |
-| `es-CL-LorenzoNeural` | Español Chile (masculino) |
-| `es-CL-CatalinaNeural` | Español Chile (femenino) |
-| `es-ES-ElviraNeural` | Español España (femenino) |
-| `es-ES-AlvaroNeural` | Español España (masculino) |
-| `es-AR-TomasNeural` | Español Argentina (masculino) |
-
-Para ver el catálogo completo de voces:
-```bash
-edge-tts --list-voices
-```
-
----
-
-## 🎨 Especificación de Assets del Avatar (2D)
-
-Los elementos visuales deben ser imágenes PNG transparentes (1024x1024 px recomendados) en la carpeta `assets/`:
-
-| Archivo | Descripción |
-|---------|-------------|
-| `body.png` | Cuerpo y tronco del personaje |
-| `hair.png` | Cabello/pelo (capa superior sobre la boca y ojos) |
-| `mouth/mouth_X.png` | Boca cerrada (reposo / silencio) |
-| `mouth/mouth_A.png` – `mouth_F.png` | Visemas de Rhubarb (boca según sonido vocal/consonante) |
-| `eyes/eyes_forward.png` | Ojos mirando al frente (cámara) |
-| `eyes/eyes_screen.png` | Ojos mirando hacia abajo/pantalla |
-| `eyes/eyes_blink.png` | Ojos cerrados (parpadeo) |
-| `hands/hands_type_1.png` – `hands_type_3.png` | Cuadros de animación de tipeo en teclado |
 
 ---
 
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT.
-
