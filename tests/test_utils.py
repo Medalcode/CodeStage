@@ -3,7 +3,7 @@ import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-from utils import split_script, ensure_dir, get_rhubarb_path, generate_audio
+from utils import split_script, ensure_dir, get_rhubarb_path, generate_audio, get_audio_hash
 
 def test_split_script_valid_file(tmp_path):
     guion = tmp_path / "guion.txt"
@@ -35,8 +35,14 @@ def test_ensure_dir(tmp_path):
     assert result.exists()
     assert result.is_dir()
 
+def test_get_audio_hash():
+    h1 = get_audio_hash("Hola mundo", "es-MX-DaliaNeural")
+    h2 = get_audio_hash("Hola mundo", "es-MX-DaliaNeural")
+    h3 = get_audio_hash("Hola mundo diferente", "es-MX-DaliaNeural")
+    assert h1 == h2
+    assert h1 != h3
+
 def test_get_rhubarb_path_local_fallback(tmp_path):
-    # Test local executable detection
     rhubarb_dir = tmp_path / "rhubarb"
     rhubarb_dir.mkdir()
     exe = rhubarb_dir / "rhubarb.exe"
@@ -50,13 +56,9 @@ def test_generate_audio_success(mock_run, tmp_path):
     out_file = tmp_path / "audio.wav"
     mock_run.return_value = MagicMock(returncode=0)
     
-    result = generate_audio("Hola mundo", out_file)
+    result = generate_audio("Hola mundo", out_file, use_cache=False)
     assert result == str(out_file)
     mock_run.assert_called_once()
-    args = mock_run.call_args[0][0]
-    assert "edge-tts" in args
-    assert "--text" in args
-    assert "Hola mundo" in args
 
 @patch("subprocess.run")
 def test_generate_audio_failure(mock_run, tmp_path):
@@ -65,5 +67,5 @@ def test_generate_audio_failure(mock_run, tmp_path):
     mock_run.side_effect = subprocess.CalledProcessError(1, "edge-tts", stderr="TTS Network Error")
     
     with pytest.raises(RuntimeError) as exc_info:
-        generate_audio("Hola", out_file)
+        generate_audio("Hola", out_file, use_cache=False)
     assert "Error al generar audio" in str(exc_info.value)

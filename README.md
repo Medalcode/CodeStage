@@ -1,154 +1,87 @@
-# Canal Tutorial Automation
+# 🎬 AI Video Studio (Automated Technical Tutorial Video Engine) — v2.0
 
-[![CI Pipeline](https://github.com/Medalcode/canal-tutorial-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/Medalcode/canal-tutorial-automation/actions/workflows/ci.yml)
+![CI Pipeline](https://github.com/Medalcode/canal-tutorial-automation/actions/workflows/ci.yml/badge.svg)
+![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.14-blue.svg)
+![Node Version](https://img.shields.io/badge/node->=18.0.0-green.svg)
+![License](https://img.shields.io/badge/license-MIT-purple.svg)
 
-Sistema automatizado en Python para generar videos de YouTube con un avatar parlante animado. Toma un guion en formato de texto (`guion.txt`) y produce un video completo con sincronización labial, parpadeo, movimiento de ojos y animación de manos, todo renderizado localmente sin necesidad de suscripciones de pago.
-
----
-
-## 🚀 Modos de funcionamiento
-
-El proyecto soporta dos pipelines de generación según el hardware disponible:
-
-### Modo A — Sprite Compositing (Python puro / Recomendado)
-Ideal para cualquier PC (funciona en CPU sin necesidad de GPU dedicada). Utiliza imágenes PNG como capas (sprites) compuestas cuadro a cuadro mediante `Pillow`, `MoviePy` y `Rhubarb Lip Sync`.
-
-### Modo B — SadTalker (IA con GPU)
-Genera animación fotorrealista a partir de una única imagen de personaje (`avatar.png`) usando el modelo de Deep Learning **SadTalker**. Requiere una GPU NVIDIA con soporte CUDA (probado en RTX 4060).
+**AI Video Studio** es un sistema empresarial de automatización de video impulsado por **FastAPI**, **Remotion (React 18 + TypeScript)** y **Edge-TTS**. Permite transformar prompts e ideas técnicas en videos tutoriales dinámicos de alta definición (1080p 30fps) con locución en español sincronizada y edición en vivo mediante Monaco Editor (VS Code Engine).
 
 ---
 
-## 🛠️ Flujo de trabajo (Modo Sprite Compositing)
+## ✨ Características Principales
 
-1. **Texto a Voz (TTS)**: `edge-tts` convierte cada párrafo de `guion.txt` a audio (`.mp3` y `.wav`).
-2. **Lip Sync (Visemas)**: `Rhubarb Lip Sync` analiza el audio en WAV y genera una secuencia de visemas en un archivo JSON (`mouthCues`).
-3. **Composición frame a frame**: `compositor.py` apila dinámicamente las capas del avatar usando `Pillow`:
-   - **Boca**: Animada en tiempo real según el visema actual (A, B, C, D, E, F, X).
-   - **Ojos**: Parpadeo aleatorio/periódico y alternancia de mirada (frente / pantalla).
-   - **Manos**: Animación de tipear al mirar la pantalla y posición de reposo al mirar a la cámara.
-   - **Cuerpo**: Efecto sutil de respiración.
-   - **Pelo**: Capa superior para dar profundidad visual.
-4. **Renderizado de clips**: `MoviePy` ensambla las imágenes compuestas y el audio en clips de video por cada párrafo.
-5. **Ensamblaje final**: `unir_videos.py` concatena secuencialmente los clips resultantes en `video_completo.mp4` mediante FFmpeg.
+* 🚀 **Motor Declarativo Remotion React v4**: Escenas visuales programadas en React con animación a 30 FPS.
+* 🎙️ **Locución Sintética Multilingüe (TTS)**: Síntesis de voz neural con caching inteligente por Hash MD5.
+* ⏱️ **Duración Dinámica Adaptativa**: Cálculo de fotogramas (`durationInFrames`) basado en la longitud física del audio MP3 generado (videos de 1 a 6 minutos reales).
+* 🤖 **Generador Multidominio por IA**: Detección automática de tecnologías (Python Data, Docker DevOps, React, SQL, Git, Linux) generando código y terminales reales.
+* ⚡ **FastAPI & WebSockets Telemetry**: Difusión bidireccional cuadro a cuadro en la interfaz web sin polling HTTP.
+* 💻 **Monaco Code Editor en Vivo**: Edición de código en tiempo real con VS Code Engine integrado en la web.
+* 📺 **Soporte Multi-Formato**: Exportación en formato YouTube (16:9 1080p) y Shorts / TikTok / Reels (9:16 Vertical).
+* 💾 **Persistencia SQLite WAL**: Almacenamiento local de proyectos e historial en `studio.db`.
 
 ---
 
-## 📂 Estructura del proyecto
+## 🛠️ Requisitos Previos
 
-```
-canal-tutorial-automation/
-├── .github/workflows/ci.yml       # Pipeline de CI en GitHub Actions
-├── tests/                          # Suite de pruebas automatizadas (Unit, Integration, Smoke)
-├── utils.py                        # Módulo central de utilidades (TTS, guion, paths)
-├── pyproject.toml                  # Configuración estándar del paquete Python
-├── requirements.txt                # Dependencias declarativas del proyecto
-├── CHANGELOG.md                    # Historial de cambios siguiendo Keep a Changelog
-├── .env.example                    # Plantilla de variables de entorno
-├── run.bat                         # Punto de entrada principal (Sprite Compositing)
-├── compositor.py                   # Renderizador del avatar 2D por capas (Sprite Compositing)
-├── automator.py                    # Orquestador del pipeline SadTalker
-├── unir_videos.py                  # Concatena clips con FFmpeg usando duraciones exactas
-├── download_rhubarb.py             # Script para descargar automáticamente Rhubarb Lip Sync
-├── preparar_personaje.py           # Generador automático de assets 2D base/placeholder
-├── generate_placeholder_assets.py  # Generador alternativo de placeholders vectoriales/dibujados
-├── prepare_assets.py               # Herramienta auxiliar de procesamiento de imágenes
-├── download_models_script.py       # Descarga modelos preentrenados de SadTalker y GFPGAN
-├── install_windows.ps1             # Instalador automático para Windows (SadTalker)
-├── guion.txt                       # Guion a leer (párrafos separados por línea en blanco)
-├── Dockerfile                      # Imagen Docker con soporte CUDA para SadTalker
-├── docker-compose.yml              # Configuración de Docker Compose con GPU NVIDIA
-├── assets/                         # Sprites PNG transparentes del avatar
-│   ├── body.png                    # Cuerpo del avatar
-│   ├── hair.png                    # Cabello (capa superior)
-│   ├── mouth/                      # Sprites de boca (mouth_X.png, mouth_A.png ... mouth_F.png)
-│   ├── eyes/                       # Sprites de ojos (eyes_forward.png, eyes_screen.png, eyes_blink.png)
-│   └── hands/                      # Sprites de manos (hands_type_1.png ... hands_type_3.png)
-├── rhubarb/                        # Carpeta del ejecutable de Rhubarb Lip Sync
-└── resultados_finales/             # Audios y clips intermedios generados
-```
+1. **Python 3.10+** (Probado en Python 3.10, 3.11 y 3.14).
+2. **Node.js v18.0+** y **npm v9+**.
+3. **FFmpeg** instalado en el PATH del sistema (`ffmpeg` y `ffprobe`).
 
 ---
 
-## 📋 Requisitos
+## 🚀 Instalación y Arranque Rápido
 
-### Modo Sprite Compositing
-- **Python 3.10+**
-- Dependencias de Python: `moviepy`, `Pillow`, `numpy`, `edge-tts`
-- **Rhubarb Lip Sync** (se puede descargar automáticamente con `python download_rhubarb.py`)
-- **FFmpeg** instalado y disponible en el PATH del sistema
-
-### Modo SadTalker (Windows nativo)
-- **Python 3.10**
-- GPU NVIDIA con CUDA 12.1 (recomendado RTX 4060 o superior)
-- Git / Git Bash
-
-### Modo SadTalker (Docker)
-- Docker Desktop con integración WSL2
-- NVIDIA Container Toolkit
-
----
-
-## ⚡ Instalación y Configuración
-
-### 1. Clonar el repositorio
 ```bash
+# 1. Clonar el repositorio
 git clone https://github.com/Medalcode/canal-tutorial-automation.git
 cd canal-tutorial-automation
-```
 
-### 2. Configurar Sprite Compositing (CPU)
-
-```powershell
-# Crear entorno virtual e instalar dependencias
-python -m venv animator_env
-.\animator_env\Scripts\Activate.ps1
+# 2. Instalar dependencias de Python
 pip install -r requirements.txt
 
-# Descargar Rhubarb Lip Sync automáticamente
-python download_rhubarb.py
+# 3. Instalar dependencias de Remotion (React)
+cd remotion-app
+npm install
+cd ..
 
-# Generar assets de personaje base (si no posees imágenes personalizadas)
-python preparar_personaje.py
+# 4. Iniciar la aplicación completa (Backend + Web GUI)
+python server.py
+# O en Windows:
+# run_app.bat
 ```
 
-### 3. Configurar SadTalker (GPU - Opcional)
-
-#### Opción A: Windows Nativo
-```powershell
-.\install_windows.ps1
-```
-
-#### Opción B: Docker
-```bash
-docker compose up -d --build
-docker exec -it sadtalker-env bash
-```
+Abre tu navegador en **`http://localhost:5000`** para acceder al estudio interactivo, o visita **`http://localhost:5000/docs`** para explorar la documentación interactiva Swagger / OpenAPI.
 
 ---
 
-## 🧪 Pruebas Automatizadas
+## ⚙️ Variables de Entorno (`.env`)
 
-El proyecto incluye una suite de pruebas automatizadas con `pytest`:
+Crea un archivo `.env` basado en `.env.example`:
+
+```env
+PORT=5000
+GEMINI_API_KEY=tu_api_key_de_gemini_opcional
+```
+
+> **Nota**: Si no se proporciona `GEMINI_API_KEY`, el sistema utilizará automáticamente el **Motor Multidominio Local** para construir guiones e historias completas.
+
+---
+
+## 🧪 Ejecución de la Suite de Pruebas (`pytest`)
 
 ```bash
-# Ejecutar todas las pruebas unitarias y de integración
+# Ejecutar todas las 32 pruebas automatizadas
 python -m pytest -v
 ```
 
 ---
 
-## 🎮 Modo de Uso
+## 🐳 Despliegue con Docker Compose
 
-### Generar Video con Sprite Compositing
-
-1. Edita el archivo `guion.txt` escribiendo el texto del tutorial. Separa los párrafos con una línea en blanco.
-2. Asegúrate de tener los sprites en la carpeta `assets/` (o genera los por defecto con `python preparar_personaje.py`).
-3. Ejecuta el renderizador:
-   ```powershell
-   python compositor.py
-   ```
-   o haz doble clic en `run.bat`.
-4. El video resultante se guardará en la raíz como `video_completo.mp4`.
+```bash
+docker-compose up --build
+```
 
 ---
 

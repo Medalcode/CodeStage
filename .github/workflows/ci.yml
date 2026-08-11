@@ -24,6 +24,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
 
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'remotion-app/package-lock.json'
+
       - name: Install System Dependencies
         run: |
           sudo apt-get update
@@ -35,9 +42,14 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
+      - name: Install Remotion NPM Dependencies
+        run: |
+          cd remotion-app
+          npm ci || npm install
+
       - name: Syntax & Compilation Check
         run: |
-          python -m py_compile utils.py compositor.py automator.py unir_videos.py preparar_personaje.py prepare_assets.py generate_placeholder_assets.py download_rhubarb.py
+          python -m py_compile server.py services/renderer.py generator/script_generator.py database.py utils.py compositor.py automator.py unir_videos.py
 
       - name: Run Test Suite
         run: |

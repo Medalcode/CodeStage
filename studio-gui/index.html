@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Video Studio — Generador de Videos Automatizados</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Monaco Editor Loader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+</head>
+<body>
+  <div class="background-glow glow-1"></div>
+  <div class="background-glow glow-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">AI Video Studio</span>
+        <span class="version-tag">ENTERPRISE V2.0</span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-swagger-docs" class="btn btn-secondary">
+          <span>⚡ Documentación Swagger API</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="dashboard-grid">
+      <!-- Left Panel: Prompt & Script Generator -->
+      <section class="panel glass-panel">
+        <div class="panel-header">
+          <h2>💡 1. Idea & Prompt para Guion por IA</h2>
+        </div>
+        
+        <div class="form-group">
+          <label for="prompt-input">Escribe la idea de tu video tutorial:</label>
+          <textarea id="prompt-input" rows="4" placeholder="Ejemplo: Tutorial de Pandas en Python o Guía de Docker para principiantes"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="format-select">Formato de Aspecto:</label>
+            <select id="format-select">
+              <option value="ExpressApiVideo">📺 YouTube / Desktop (16:9 - 1080p)</option>
+              <option value="ExpressApiVideoShorts">📱 Shorts / TikTok / Reels (9:16 - Vertical)</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="length-select">Duración Objetivo:</label>
+            <select id="length-select">
+              <option value="standard">📹 Tutorial Estándar (2 - 3 Minutos)</option>
+              <option value="long">🎓 Guía Completa Detallada (4 - 6 Minutos)</option>
+              <option value="short">⚡ Short / Reel Rápido (45 - 60 Segundos)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="voice-select">Voz Sintética (TTS):</label>
+          <select id="voice-select">
+            <option value="es-MX-DaliaNeural">es-MX-DaliaNeural (Femenino)</option>
+            <option value="es-MX-JorgeNeural">es-MX-JorgeNeural (Masculino)</option>
+            <option value="es-ES-ElviraNeural">es-ES-ElviraNeural (España)</option>
+          </select>
+        </div>
+
+        <button id="btn-generate-script" class="btn btn-primary btn-block">
+          <span>✨ Generar Guion e Historias por IA</span>
+        </button>
+      </section>
+
+      <!-- Right Panel: Script Editor & Renderer -->
+      <section class="panel glass-panel">
+        <div class="panel-header">
+          <h2>🎬 2. Escenas del Video & Monaco Code Editor</h2>
+        </div>
+
+        <div id="script-preview-container" class="script-editor">
+          <div class="empty-state">
+            <span class="empty-icon">📝</span>
+            <p>Ingresa tu idea a la izquierda y presiona <strong>"Generar Guion por IA"</strong> para construir la secuencia de video.</p>
+          </div>
+        </div>
+
+        <!-- Monaco Editor Live Container -->
+        <div id="monaco-wrapper" class="monaco-wrapper hidden">
+          <div class="monaco-header">
+            <span id="monaco-filename">📝 script.py</span>
+            <span class="monaco-tag">VS CODE ENGINE</span>
+          </div>
+          <div id="monaco-container" style="height: 180px; width: 100%;"></div>
+        </div>
+
+        <!-- Render Controls -->
+        <div class="render-section">
+          <button id="btn-render-video" class="btn btn-accent btn-block btn-lg">
+            <span>🚀 Renderizar Video Completo (MP4)</span>
+          </button>
+
+          <!-- Render Progress Bar -->
+          <div id="render-progress-card" class="progress-card hidden">
+            <div class="progress-header">
+              <span id="status-message">Iniciando renderizado...</span>
+              <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

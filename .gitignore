@@ -1,10 +1,17 @@
 SadTalker/
 sadtalker_env/
 resultados_finales/
+output_videos/
 video_completo.mp4
 *.mp4
 *.wav
+*.mp3
 __pycache__/
 graphify-out/
 .pytest_cache/
 *.pyc
+studio.db
+cache/
+remotion-app/node_modules/
+remotion-app/build/
+remotion-app/public/audio/

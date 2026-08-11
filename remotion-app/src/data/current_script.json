@@ -1,0 +1,92 @@
+{
+  "title": "Docker Compose Guide",
+  "subtitle": "Guía Práctica Automatizada",
+  "category": "TUTORIAL DESARROLLO",
+  "scenes": [
+    {
+      "id": "scene-1-intro",
+      "type": "intro",
+      "title": "Docker Compose Guide",
+      "subtitle": "Contenedores y Despliegue Profesional",
+      "requirements": [
+        "Docker Desktop",
+        "Terminal / PowerShell",
+        "Código de tu aplicación"
+      ],
+      "speechText": "Bienvenidos a esta guía práctica sobre Docker Compose Guide. Los contenedores permiten empaquetar aplicaciones junto con todas sus dependencias garantizando que funcionen idénticamente en cualquier entorno.",
+      "audioFile": "audio_scene-1-intro.mp3",
+      "durationInFrames": 403
+    },
+    {
+      "id": "scene-2-diagram",
+      "type": "diagram",
+      "title": "Arquitectura de Contenedores",
+      "nodes": [
+        "Código Fuente",
+        "Dockerfile Script",
+        "Docker Image",
+        "Contenedor en Ejecución"
+      ],
+      "speechText": "Comprendamos la arquitectura. A partir del código escribimos la receta Dockerfile, construimos la imagen inmutable y la desplegamos como un contenedor aislado.",
+      "audioFile": "audio_scene-2-diagram.mp3",
+      "durationInFrames": 352
+    },
+    {
+      "id": "scene-3-setup",
+      "type": "terminal",
+      "title": "Verificación e Inspección de Docker",
+      "terminalPrompt": "user@laptop:~/app$",
+      "commands": [
+        {
+          "text": "docker --version",
+          "output": [
+            "Docker version 25.0.3, build 4debf41"
+          ]
+        },
+        {
+          "text": "docker build -t mi-app:v1 .",
+          "output": [
+            "Step 1/5 : FROM node:20-alpine",
+            "Successfully tagged mi-app:v1"
+          ]
+        },
+        {
+          "text": "docker run -d -p 8080:8080 mi-app:v1",
+          "output": [
+            "a1b2c3d4e5f67890"
+          ]
+        }
+      ],
+      "speechText": "En la consola verificamos que el demonio de Docker esté activo, construimos la imagen asignando una etiqueta de versión y lanzamos el contenedor exponiendo el puerto del servidor.",
+      "audioFile": "audio_scene-3-setup.mp3",
+      "durationInFrames": 335
+    },
+    {
+      "id": "scene-4-editor",
+      "type": "editor",
+      "filename": "Dockerfile",
+      "codeLines": [
+        "FROM node:20-alpine",
+        "WORKDIR /app",
+        "COPY package*.json ./",
+        "RUN npm install --production",
+        "COPY . .",
+        "EXPOSE 8080",
+        "CMD [\"npm\", \"start\"]"
+      ],
+      "speechText": "En el Dockerfile definimos una imagen base ligera Alpine, establecemos el directorio de trabajo, instalamos dependencias y configuramos el comando de arranque.",
+      "audioFile": "audio_scene-4-editor.mp3",
+      "durationInFrames": 325
+    },
+    {
+      "id": "scene-5-outro",
+      "type": "outro",
+      "title": "¡Contenedor Desplegado!",
+      "subtitle": "Suscríbete para aprender Kubernetes y CI/CD DevOps",
+      "githubRepo": "github.com/Medalcode/docker-devops-guide",
+      "speechText": "Ahora tu aplicación está completamente contenida y lista para ser enviada a la nube. Suscríbete para aprender más sobre arquitectura DevOps.",
+      "audioFile": "audio_scene-5-outro.mp3",
+      "durationInFrames": 318
+    }
+  ]
+}
