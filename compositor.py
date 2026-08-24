@@ -102,16 +102,18 @@ def run_pipeline():
                 "-acodec", "pcm_s16le", "-ar", "16000", audio_path
             ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             
-            # 2. Análisis de Lip Sync con Rhubarb
+            # 2. Análisis de Lip Sync con Rhubarb (con Caché SHA-256)
             viseme_path = f"{OUTPUT_DIR}/visemes_{i}.json"
-            print("[*] Analizando audio para sincronización labial (visemas)...")
-            
-            subprocess.run([
-                rhubarb_exe, 
-                "-f", "json", 
-                "-o", viseme_path, 
-                audio_path
-            ], check=True, stdout=subprocess.DEVNULL)
+            if not os.path.exists(viseme_path) or os.path.getsize(viseme_path) == 0:
+                print("[*] Analizando audio para sincronización labial (visemas)...")
+                subprocess.run([
+                    rhubarb_exe, 
+                    "-f", "json", 
+                    "-o", viseme_path, 
+                    audio_path
+                ], check=True, stdout=subprocess.DEVNULL)
+            else:
+                print("[*] Reutilizando visemas de Rhubarb desde caché.")
             
             # Cargar visemas producidos por Rhubarb
             with open(viseme_path, 'r', encoding='utf-8') as f:
