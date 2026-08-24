@@ -15,7 +15,7 @@ from utils import ensure_dir
 
 logger = get_logger("services.renderer")
 
-class RemotionRendererService:
+class LtxAvatarRendererService:
     """
     Servicio de renderizado LTX AI Avatar Diffusion Engine.
     Combina Avatar parlante generado por IA difusiva (Ghibli Programmer) a la izquierda (40%)
@@ -197,3 +197,6 @@ class RemotionRendererService:
                 await on_progress(self.status)
 
         return self.status
+
+# Alias polimórfico para 100% retrocompatibilidad con la API
+RemotionRendererService = LtxAvatarRendererService
