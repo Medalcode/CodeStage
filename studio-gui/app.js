@@ -49,11 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initialize WebSockets Telemetry
+  // Initialize WebSockets Telemetry with Exponential Backoff
+  let wsReconnectDelay = 2000;
   function initWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/ws/render`;
     socket = new WebSocket(wsUrl);
+
+    socket.onopen = () => {
+      wsReconnectDelay = 2000;
+    };
 
     socket.onmessage = (event) => {
       const statusData = JSON.parse(event.data);
@@ -61,7 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     socket.onclose = () => {
-      setTimeout(initWebSocket, 3000);
+      setTimeout(() => {
+        wsReconnectDelay = Math.min(wsReconnectDelay * 1.5, 30000);
+        initWebSocket();
+      }, wsReconnectDelay);
     };
   }
 
