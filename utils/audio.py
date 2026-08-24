@@ -11,9 +11,9 @@ CACHE_AUDIO_DIR = BASE_DIR / "cache" / "audio"
 PUBLIC_AUDIO_DIR = BASE_DIR / "remotion-app" / "public" / "audio"
 
 def get_audio_hash(text: str, voice: str = DEFAULT_VOICE) -> str:
-    """Calcula el hash MD5 único a partir del texto y la voz."""
+    """Calcula el hash SHA-256 único a partir del texto y la voz."""
     key = f"{voice}::{text.strip()}".encode('utf-8')
-    return hashlib.md5(key).hexdigest()
+    return hashlib.sha256(key).hexdigest()[:16]
 
 def get_audio_duration_seconds(audio_path: str) -> float:
     """

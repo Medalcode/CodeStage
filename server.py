@@ -228,4 +228,9 @@ app.mount("/", StaticFiles(directory=str(GUI_DIR), html=True), name="static")
 if __name__ == "__main__":
     logger.info(f"Iniciando AI Video Studio (FastAPI Enterprise Engine v2.0) en http://localhost:{PORT}")
     logger.info(f"Documentación OpenAPI / Swagger disponible en http://localhost:{PORT}/docs")
-    uvicorn.run(app, host="localhost", port=PORT)
+    try:
+        uvicorn.run(app, host="localhost", port=PORT)
+    except OSError as e:
+        fallback_port = PORT + 100
+        logger.warning(f"Puerto {PORT} ocupado. Iniciando automáticamente en puerto alternativo {fallback_port}...")
+        uvicorn.run(app, host="localhost", port=fallback_port)
