@@ -15,7 +15,7 @@ from utils import ensure_dir
 
 logger = get_logger("services.renderer")
 
-class RemotionRendererService:
+class ManimVectorRendererService:
     """
     Servicio de renderizado de Animaciones Vectoriales con Manim Engine (Estilo 3Blue1Brown).
     Genera animaciones de código, nodos y diagramas vectoriales cuadro a cuadro.
@@ -193,3 +193,6 @@ class RemotionRendererService:
                 await on_progress(self.status)
 
         return self.status
+
+# Alias polimórfico para 100% retrocompatibilidad con la API
+RemotionRendererService = ManimVectorRendererService
