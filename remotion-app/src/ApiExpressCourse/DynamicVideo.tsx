@@ -10,6 +10,13 @@ import { FeaturesWindow } from "./components/FeaturesWindow";
 import { Scene6Outro } from "./components/Scene6Outro";
 import { SubtitleBar } from "./components/SubtitleBar";
 
+// Nuevos Componentes UI de Tutoriales
+import { BrowserWindow } from "./components/BrowserWindow";
+import { ExcelWindow } from "./components/ExcelWindow";
+import { FileExplorerWindow } from "./components/FileExplorerWindow";
+import { AnalyticsChartWindow } from "./components/AnalyticsChartWindow";
+import { ImageShowcaseWindow } from "./components/ImageShowcaseWindow";
+
 import scriptData from "../data/current_script.json";
 
 export const DynamicVideo: React.FC<{
@@ -102,6 +109,51 @@ export const DynamicVideo: React.FC<{
               <FeaturesWindow
                 title={scene.title}
                 features={scene.features || []}
+              />
+            );
+          } else if (scene.type === "browser") {
+            sceneContent = (
+              <BrowserWindow
+                url={scene.url}
+                title={scene.title}
+                mainContent={scene.mainContent}
+                previewImage={scene.previewImage}
+              />
+            );
+          } else if (scene.type === "excel") {
+            sceneContent = (
+              <ExcelWindow
+                title={scene.title}
+                sheetName={scene.sheetName}
+                formula={scene.formula}
+                headers={scene.headers}
+                rows={scene.rows}
+                summaryText={scene.summaryText}
+              />
+            );
+          } else if (scene.type === "file_explorer") {
+            sceneContent = (
+              <FileExplorerWindow
+                projectName={scene.projectName}
+                files={scene.files}
+                activeFileDetails={scene.activeFileDetails}
+              />
+            );
+          } else if (scene.type === "analytics_chart") {
+            sceneContent = (
+              <AnalyticsChartWindow
+                title={scene.title}
+                metrics={scene.metrics}
+                chartTitle={scene.chartTitle}
+              />
+            );
+          } else if (scene.type === "image_showcase") {
+            sceneContent = (
+              <ImageShowcaseWindow
+                title={scene.title}
+                subtitle={scene.subtitle}
+                imageSrc={scene.imageSrc}
+                caption={scene.caption}
               />
             );
           } else if (scene.type === "outro") {

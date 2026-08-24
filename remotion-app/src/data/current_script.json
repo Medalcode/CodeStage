@@ -1,92 +1,138 @@
 {
-  "title": "Docker Compose Guide",
+  "title": "como extraer una base de datos desde una api usando vscode, transformar con power query, mostrar en power bi online en el navegador",
   "subtitle": "Guía Práctica Automatizada",
   "category": "TUTORIAL DESARROLLO",
   "scenes": [
     {
       "id": "scene-1-intro",
       "type": "intro",
-      "title": "Docker Compose Guide",
-      "subtitle": "Contenedores y Despliegue Profesional",
+      "title": "como extraer una base de datos desde una api usando vscode, transformar con power query, mostrar en power bi online en el navegador",
+      "subtitle": "Tutorial Paso a Paso para Desarrolladores",
       "requirements": [
-        "Docker Desktop",
-        "Terminal / PowerShell",
-        "Código de tu aplicación"
+        "Entorno de Desarrollo",
+        "Terminal de Comandos",
+        "Visual Studio Code"
       ],
-      "speechText": "Bienvenidos a esta guía práctica sobre Docker Compose Guide. Los contenedores permiten empaquetar aplicaciones junto con todas sus dependencias garantizando que funcionen idénticamente en cualquier entorno.",
+      "speechText": "Bienvenidos a esta guía sobre como extraer una base de datos desde una api usando vscode, transformar con power query, mostrar en power bi online en el navegador. Veremos los componentes principales y herramientas necesarias paso a paso.",
       "audioFile": "audio_scene-1-intro.mp3",
-      "durationInFrames": 403
+      "durationInFrames": 481
     },
     {
-      "id": "scene-2-diagram",
-      "type": "diagram",
-      "title": "Arquitectura de Contenedores",
-      "nodes": [
-        "Código Fuente",
-        "Dockerfile Script",
-        "Docker Image",
-        "Contenedor en Ejecución"
+      "id": "scene-2-explorer",
+      "type": "file_explorer",
+      "projectName": "proyecto-demo",
+      "files": [
+        {
+          "name": "src/",
+          "type": "folder",
+          "active": false
+        },
+        {
+          "name": "  main.js",
+          "type": "file",
+          "active": true
+        },
+        {
+          "name": "Dockerfile",
+          "type": "file",
+          "active": false
+        },
+        {
+          "name": "package.json",
+          "type": "file",
+          "active": false
+        }
       ],
-      "speechText": "Comprendamos la arquitectura. A partir del código escribimos la receta Dockerfile, construimos la imagen inmutable y la desplegamos como un contenedor aislado.",
-      "audioFile": "audio_scene-2-diagram.mp3",
-      "durationInFrames": 352
+      "activeFileDetails": {
+        "name": "main.js",
+        "path": "src/main.js",
+        "size": "2.1 KB",
+        "lines": 60
+      },
+      "speechText": "Revisamos la arquitectura del proyecto en el explorador de archivos con la estructura modular preparada.",
+      "audioFile": "audio_scene-2-explorer.mp3",
+      "durationInFrames": 217
     },
     {
-      "id": "scene-3-setup",
+      "id": "scene-3-diagram",
+      "type": "diagram",
+      "title": "Arquitectura y Componentes",
+      "nodes": [
+        "Cliente Web",
+        "API Backend",
+        "Base de Datos"
+      ],
+      "speechText": "En este diagrama observamos la interacción conceptual entre el cliente web, la API y la base de datos.",
+      "audioFile": "audio_scene-3-diagram.mp3",
+      "durationInFrames": 233
+    },
+    {
+      "id": "scene-4-setup",
       "type": "terminal",
-      "title": "Verificación e Inspección de Docker",
-      "terminalPrompt": "user@laptop:~/app$",
+      "title": "Consola de Comandos",
+      "terminalPrompt": "user@laptop:~/proyecto$",
       "commands": [
         {
-          "text": "docker --version",
-          "output": [
-            "Docker version 25.0.3, build 4debf41"
-          ]
+          "text": "mkdir proyecto-demo && cd proyecto-demo"
         },
         {
-          "text": "docker build -t mi-app:v1 .",
+          "text": "git init",
           "output": [
-            "Step 1/5 : FROM node:20-alpine",
-            "Successfully tagged mi-app:v1"
-          ]
-        },
-        {
-          "text": "docker run -d -p 8080:8080 mi-app:v1",
-          "output": [
-            "a1b2c3d4e5f67890"
+            "Initialized empty Git repository in /proyecto-demo/.git/"
           ]
         }
       ],
-      "speechText": "En la consola verificamos que el demonio de Docker esté activo, construimos la imagen asignando una etiqueta de versión y lanzamos el contenedor exponiendo el puerto del servidor.",
-      "audioFile": "audio_scene-3-setup.mp3",
-      "durationInFrames": 335
+      "speechText": "En la consola ejecutamos los comandos de inicialización del proyecto y control de versiones.",
+      "audioFile": "audio_scene-4-setup.mp3",
+      "durationInFrames": 208
     },
     {
-      "id": "scene-4-editor",
+      "id": "scene-5-editor",
       "type": "editor",
-      "filename": "Dockerfile",
+      "filename": "main.js",
       "codeLines": [
-        "FROM node:20-alpine",
-        "WORKDIR /app",
-        "COPY package*.json ./",
-        "RUN npm install --production",
-        "COPY . .",
-        "EXPOSE 8080",
-        "CMD [\"npm\", \"start\"]"
+        "// Implementación principal para como extraer una base de datos desde una api usando vscode, transformar con power query, mostrar en power bi online en el navegador",
+        "function initSystem() {",
+        "    console.log('Sistema iniciado con éxito');",
+        "    return { status: 'ok', timestamp: Date.now() };",
+        "}",
+        "",
+        "module.exports = { initSystem };"
       ],
-      "speechText": "En el Dockerfile definimos una imagen base ligera Alpine, establecemos el directorio de trabajo, instalamos dependencias y configuramos el comando de arranque.",
-      "audioFile": "audio_scene-4-editor.mp3",
-      "durationInFrames": 325
+      "speechText": "En el editor de código desarrollamos la función principal con estándares de código limpio.",
+      "audioFile": "audio_scene-5-editor.mp3",
+      "durationInFrames": 204
     },
     {
-      "id": "scene-5-outro",
+      "id": "scene-6-analytics",
+      "type": "analytics_chart",
+      "title": "Panel de Control y Métricas",
+      "metrics": [
+        {
+          "label": "Estado",
+          "value": "ACTIVO",
+          "change": "OK"
+        },
+        {
+          "label": "Rendimiento",
+          "value": "99.8%",
+          "change": "+ 2%"
+        }
+      ],
+      "chartTitle": "Indicadores Clave del Sistema",
+      "speechText": "Verificamos los indicadores y métricas de ejecución en el panel de monitoreo.",
+      "audioFile": "audio_scene-6-analytics.mp3",
+      "durationInFrames": 189
+    },
+    {
+      "id": "scene-7-outro",
       "type": "outro",
-      "title": "¡Contenedor Desplegado!",
-      "subtitle": "Suscríbete para aprender Kubernetes y CI/CD DevOps",
-      "githubRepo": "github.com/Medalcode/docker-devops-guide",
-      "speechText": "Ahora tu aplicación está completamente contenida y lista para ser enviada a la nube. Suscríbete para aprender más sobre arquitectura DevOps.",
-      "audioFile": "audio_scene-5-outro.mp3",
-      "durationInFrames": 318
+      "title": "¡Proyecto Completado!",
+      "subtitle": "Suscríbete y activa la campanita para más tutoriales",
+      "githubRepo": "github.com/Medalcode/canal-tutorial-automation",
+      "speechText": "Hemos finalizado el proyecto. Si te ha gustado, suscríbete al canal y dale un me gusta.",
+      "audioFile": "audio_scene-7-outro.mp3",
+      "durationInFrames": 246
     }
   ]
 }

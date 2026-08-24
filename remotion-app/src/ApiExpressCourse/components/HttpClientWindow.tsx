@@ -4,7 +4,7 @@ import { spring, useCurrentFrame, useVideoConfig } from "remotion";
 export interface HttpClientProps {
   method: "GET" | "POST";
   url: string;
-  statusCode?: string;
+  statusCode?: string | number;
   requestBody?: string;
   responseBody: string;
 }
@@ -27,7 +27,9 @@ export const HttpClientWindow: React.FC<HttpClientProps> = ({
 
   const isPost = method === "POST";
   const methodColor = isPost ? "#f59e0b" : "#6366f1";
-  const statusBg = statusCode.includes("201") || statusCode.includes("200") ? "#166534" : "#991b1b";
+
+  const codeStr = String(statusCode || "200 OK");
+  const statusBg = codeStr.includes("201") || codeStr.includes("200") ? "#166534" : "#991b1b";
 
   return (
     <div
@@ -89,7 +91,7 @@ export const HttpClientWindow: React.FC<HttpClientProps> = ({
             borderRadius: "8px",
           }}
         >
-          {statusCode}
+          {codeStr}
         </span>
       </div>
 

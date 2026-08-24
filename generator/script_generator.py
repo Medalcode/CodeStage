@@ -8,90 +8,130 @@ logger = get_logger("generator.script")
 
 def generate_multidomain_script(idea: str, target_length: str = "standard") -> Dict[str, Any]:
     """
-    Genera un guion rico adaptado a la tecnología solicitada sin plantillas estáticas repetitivas.
+    Genera un guion rico y variado (7-10 escenas) adaptado a la tecnología solicitada
+    incorporando IDE, Consola, Navegador Web, Excel, Explorador de Archivos y Analytics.
     """
     idea_lower = idea.lower()
 
     # Detección de dominio
-    if any(k in idea_lower for k in ["python", "pandas", "numpy", "data"]):
+    if any(k in idea_lower for k in ["python", "pandas", "numpy", "data", "excel"]):
         domain = "python_data"
     elif any(k in idea_lower for k in ["docker", "contenedor", "devops", "kubernete"]):
         domain = "docker"
-    elif any(k in idea_lower for k in ["react", "next", "frontend", "component"]):
-        domain = "react"
+    elif any(k in idea_lower for k in ["react", "next", "frontend", "web", "html", "css"]):
+        domain = "react_web"
     elif any(k in idea_lower for k in ["sql", "postgres", "database", "base de dato"]):
         domain = "sql"
-    elif any(k in idea_lower for k in ["git", "github", "commit", "branch"]):
-        domain = "git"
-    elif any(k in idea_lower for k in ["fastapi", "uvicorn"]):
-        domain = "fastapi"
+    elif any(k in idea_lower for k in ["power bi", "analytics", "dashboard", "metric"]):
+        domain = "analytics"
     else:
         domain = "general"
 
     title_clean = idea.strip() or "Guía Práctica de Desarrollo"
 
-    # Construcción de escenas según dominio
+    # Construcción de 7 a 10 escenas ricas según el dominio
     if domain == "python_data":
         scenes = [
             {
                 "id": "scene-1-intro",
                 "type": "intro",
                 "title": title_clean,
-                "subtitle": "Análisis y Procesamiento de Datos con Python",
-                "requirements": ["Python 3.10+", "Biblioteca Pandas", "Jupyter / VS Code"],
-                "speechText": f"Bienvenidos a esta guía sobre {title_clean}. En el desarrollo moderno, el procesamiento de datos estructurados es fundamental para extraer información de alto valor para las organizaciones."
+                "subtitle": "Análisis de Datos con Python & Pandas",
+                "requirements": ["Python 3.10+", "Pandas & OpenPyXL", "Excel / VS Code"],
+                "speechText": f"Bienvenidos a este tutorial sobre {title_clean}. En el desarrollo moderno, la automatización y análisis de datos en archivos Excel con Python es una de las habilidades más demandadas."
             },
             {
-                "id": "scene-2-diagram",
-                "type": "diagram",
-                "title": "Pipeline de Procesamiento de Datos",
-                "nodes": ["Archivos CSV / JSON", "DataFrames Pandas", "Limpieza & Transformación", "Exportación / BI"],
-                "speechText": "Revisemos el flujo de datos. Primero leemos la fuente de información, la cargamos en memoria utilizando DataFrames de Pandas, filtramos las anomalías y generamos los reportes finales."
+                "id": "scene-2-explorer",
+                "type": "file_explorer",
+                "projectName": "proyecto-analisis-python",
+                "files": [
+                    { "name": "data/", "type": "folder", "active": False },
+                    { "name": "  ventas_2026.xlsx", "type": "file", "active": True },
+                    { "name": "script_procesamiento.py", "type": "file", "active": False },
+                    { "name": "requirements.txt", "type": "file", "active": False },
+                ],
+                "activeFileDetails": {
+                    "name": "ventas_2026.xlsx",
+                    "path": "data/ventas_2026.xlsx",
+                    "size": "45.2 KB",
+                    "lines": 500
+                },
+                "speechText": "Revisamos la estructura del proyecto en nuestro explorador de archivos. Tenemos nuestra fuente de datos en Excel y el script principal en Python."
             },
             {
                 "id": "scene-3-setup",
                 "type": "terminal",
-                "title": "Entorno Virtual e Instalación",
+                "title": "Configuración del Entorno de Python",
                 "terminalPrompt": "user@laptop:~/data-project$",
                 "commands": [
                     { "text": "python -m venv venv && source venv/bin/activate" },
-                    { "text": "pip install pandas numpy openpyxl matplotlib", "output": ["Successfully installed pandas-2.2.0 numpy-1.26.0"] }
+                    { "text": "pip install pandas openpyxl matplotlib", "output": ["Successfully installed pandas-2.2.0 openpyxl-3.1.2"] }
                 ],
-                "speechText": "Abrimos nuestra terminal para configurar un entorno virtual aislado de Python e instalar Pandas junto con las dependencias necesarias."
+                "speechText": "Abrimos nuestra consola de comandos para crear un entorno virtual aislado e instalar la librería Pandas junto con OpenPyXL."
             },
             {
                 "id": "scene-4-editor",
                 "type": "editor",
-                "filename": "analysis.py",
+                "filename": "script_procesamiento.py",
                 "codeLines": [
                     "import pandas as pd",
                     "",
-                    "# Cargar datos de ventas",
-                    "df = pd.read_csv('ventas_2026.csv')",
+                    "# Cargar datos desde la plantilla Excel",
+                    "df = pd.read_excel('data/ventas_2026.xlsx')",
                     "",
-                    "# Filtrar ventas mayores a 1000 USD",
-                    "df_filtered = df[df['total'] > 1000]",
+                    "# Filtrar ingresos mayores a 10,000 USD",
+                    "df_top = df[df['Ingresos'] > 10000]",
                     "",
-                    "# Agrupar por región y calcular el promedio",
-                    "resumen = df_filtered.groupby('region')['total'].mean()",
-                    "print(resumen)"
+                    "# Exportar reporte procesado",
+                    "df_top.to_excel('data/reporte_final.xlsx', index=False)",
+                    "print('¡Reporte generado con éxito!')"
                 ],
-                "speechText": "En nuestro script creamos el DataFrame, aplicamos filtros sobre los montos de ventas y agrupamos por región geográfica calculando métricas clave de forma inmediata."
+                "speechText": "En nuestro editor de código VS Code leemos la plantilla de Excel, aplicamos filtros de ingresos y exportamos el reporte consolidado."
             },
             {
-                "id": "scene-5-features",
+                "id": "scene-5-excel",
+                "type": "excel",
+                "title": "Plantilla Excel — Resultados Procesados",
+                "sheetName": "Ventas_Consolidadas",
+                "formula": "=SUMA(C2:C6)",
+                "headers": ["ID", "Región / Cliente", "Ingresos (USD)", "Crecimiento", "Estado"],
+                "rows": [
+                    ["201", "América del Norte", "$ 45,200", "+ 28%", "Procesado"],
+                    ["202", "Latinoamérica", "$ 32,800", "+ 34%", "Procesado"],
+                    ["203", "Europa Central", "$ 28,900", "+ 15%", "Procesado"],
+                    ["204", "Asia Pacífico", "$ 19,400", "+ 22%", "Procesado"],
+                    ["TOTAL", "Ingresos Globales", "$ 126,300", "+ 25%", "COMPLETADO"]
+                ],
+                "summaryText": "Los datos han sido calculados automáticamente y formateados en la hoja de cálculo.",
+                "speechText": "Visualizamos los resultados en la plantilla de Excel. El script ha clasificado los totales de ventas calculando fórmulas consolidadas."
+            },
+            {
+                "id": "scene-6-analytics",
+                "type": "analytics_chart",
+                "title": "Power BI / Dashboard de Análisis",
+                "metrics": [
+                    { "label": "Ventas Totales", "value": "$ 126.3 K", "change": "+ 25%" },
+                    { "label": "Región Top", "value": "Latam", "change": "+ 34%" },
+                    { "label": "Tiempo Proceso", "value": "1.2 sec", "change": "RÁPIDO" },
+                    { "label": "Error Rate", "value": "0.0 %", "change": "CERO" }
+                ],
+                "chartTitle": "Comparativa de Crecimiento por Trimestre",
+                "speechText": "Cargamos los datos en nuestro Dashboard de analítica y Power BI para proyectar los gráficos de crecimiento acumulado."
+            },
+            {
+                "id": "scene-7-features",
                 "type": "features",
-                "title": "Beneficios de Automatizar con Python",
-                "features": ["Procesamiento en milisegundos", "Integración con Bases de Datos", "Cero errores manuales en Excel"],
-                "speechText": "Al automatizar este flujo con Python reducimos el tiempo de procesamiento de horas a milisegundos y eliminamos por completo los errores de edición manual."
+                "title": "Ventajas de Automatizar con Python & Excel",
+                "features": ["Reducción de horas a milisegundos", "Cero errores manuales de fórmulas", "Reportes listos para la gerencia"],
+                "speechText": "Al integrar Python con plantillas de Excel y analítica, logramos reportes instantáneos listos para la toma de decisiones."
             },
             {
-                "id": "scene-6-outro",
+                "id": "scene-8-outro",
                 "type": "outro",
-                "title": "¡Procesamiento Completado!",
-                "subtitle": "Suscríbete y activa la campanita para más tutoriales de Data Science",
-                "githubRepo": "github.com/Medalcode/python-data-automation",
-                "speechText": "Y con esto hemos completado nuestro pipeline automatizado en Python. Si te ha gustado esta guía, apóyame suscribiéndote al canal."
+                "title": "¡Tutorial Completado!",
+                "subtitle": "Suscríbete y activa las notificaciones para más contenido técnico",
+                "githubRepo": "github.com/Medalcode/canal-tutorial-automation",
+                "speechText": "Y con esto concluimos este tutorial de Python y análisis de datos. Apóyame con un me gusta y suscríbete al canal."
             }
         ]
     elif domain == "docker":
@@ -100,31 +140,30 @@ def generate_multidomain_script(idea: str, target_length: str = "standard") -> D
                 "id": "scene-1-intro",
                 "type": "intro",
                 "title": title_clean,
-                "subtitle": "Contenedores y Despliegue Profesional",
-                "requirements": ["Docker Desktop", "Terminal / PowerShell", "Código de tu aplicación"],
-                "speechText": f"Bienvenidos a esta guía práctica sobre {title_clean}. Los contenedores permiten empaquetar aplicaciones junto con todas sus dependencias garantizando que funcionen idénticamente en cualquier entorno."
+                "subtitle": "Contenedores y Despliegue DevOps Profesional",
+                "requirements": ["Docker Desktop", "Terminal / PowerShell", "Código de Aplicación"],
+                "speechText": f"Bienvenidos a este tutorial sobre {title_clean}. Los contenedores permiten empaquetar aplicaciones garantizando que ejecuten idénticamente en cualquier entorno."
             },
             {
-                "id": "scene-2-diagram",
-                "type": "diagram",
-                "title": "Arquitectura de Contenedores",
-                "nodes": ["Código Fuente", "Dockerfile Script", "Docker Image", "Contenedor en Ejecución"],
-                "speechText": "Comprendamos la arquitectura. A partir del código escribimos la receta Dockerfile, construimos la imagen inmutable y la desplegamos como un contenedor aislado."
-            },
-            {
-                "id": "scene-3-setup",
-                "type": "terminal",
-                "title": "Verificación e Inspección de Docker",
-                "terminalPrompt": "user@laptop:~/app$",
-                "commands": [
-                    { "text": "docker --version", "output": ["Docker version 25.0.3, build 4debf41"] },
-                    { "text": "docker build -t mi-app:v1 .", "output": ["Step 1/5 : FROM node:20-alpine", "Successfully tagged mi-app:v1"] },
-                    { "text": "docker run -d -p 8080:8080 mi-app:v1", "output": ["a1b2c3d4e5f67890"] }
+                "id": "scene-2-explorer",
+                "type": "file_explorer",
+                "projectName": "app-dockerizada",
+                "files": [
+                    { "name": "src/", "type": "folder", "active": False },
+                    { "name": "Dockerfile", "type": "file", "active": True },
+                    { "name": "docker-compose.yml", "type": "file", "active": False },
+                    { "name": ".dockerignore", "type": "file", "active": False },
                 ],
-                "speechText": "En la consola verificamos que el demonio de Docker esté activo, construimos la imagen asignando una etiqueta de versión y lanzamos el contenedor exponiendo el puerto del servidor."
+                "activeFileDetails": {
+                    "name": "Dockerfile",
+                    "path": "Dockerfile",
+                    "size": "1.2 KB",
+                    "lines": 18
+                },
+                "speechText": "En nuestro explorador de archivos revisamos la receta Dockerfile y los archivos de configuración del contenedor."
             },
             {
-                "id": "scene-4-editor",
+                "id": "scene-3-editor",
                 "type": "editor",
                 "filename": "Dockerfile",
                 "codeLines": [
@@ -136,67 +175,213 @@ def generate_multidomain_script(idea: str, target_length: str = "standard") -> D
                     "EXPOSE 8080",
                     "CMD [\"npm\", \"start\"]"
                 ],
-                "speechText": "En el Dockerfile definimos una imagen base ligera Alpine, establecemos el directorio de trabajo, instalamos dependencias y configuramos el comando de arranque."
+                "speechText": "En el editor de código VS Code escribimos el Dockerfile con una imagen ligera Alpine, instalando dependencias y exponiendo el puerto."
             },
             {
-                "id": "scene-5-outro",
+                "id": "scene-4-setup",
+                "type": "terminal",
+                "title": "Construcción y Ejecución del Contenedor",
+                "terminalPrompt": "user@laptop:~/app-docker$",
+                "commands": [
+                    { "text": "docker build -t mi-app:v1 .", "output": ["Step 1/5 : FROM node:20-alpine", "Successfully tagged mi-app:v1"] },
+                    { "text": "docker run -d -p 8080:8080 mi-app:v1", "output": ["a1b2c3d4e5f67890"] }
+                ],
+                "speechText": "Abrimos la consola de comandos para construir la imagen etiquetada e iniciar el contenedor exponiendo el puerto 8080."
+            },
+            {
+                "id": "scene-5-browser",
+                "type": "browser",
+                "url": "http://localhost:8080",
+                "title": "Navegador Web — Contenedor Activo",
+                "contentType": "webpage",
+                "mainContent": "🐳 Aplicación Contenida en Ejecución",
+                "speechText": "Comprobamos en el navegador web que nuestra aplicación dockerizada responde perfectamente en localhost:8080."
+            },
+            {
+                "id": "scene-6-diagram",
+                "type": "diagram",
+                "title": "Arquitectura de Contenedores",
+                "nodes": ["Código Fuente", "Dockerfile Recipe", "Docker Image", "Contenedor Cloud"],
+                "speechText": "Revisamos el flujo conceptual de la arquitectura de contenedores desde el código hasta la nube."
+            },
+            {
+                "id": "scene-7-outro",
                 "type": "outro",
                 "title": "¡Contenedor Desplegado!",
-                "subtitle": "Suscríbete para aprender Kubernetes y CI/CD DevOps",
-                "githubRepo": "github.com/Medalcode/docker-devops-guide",
-                "speechText": "Ahora tu aplicación está completamente contenida y lista para ser enviada a la nube. Suscríbete para aprender más sobre arquitectura DevOps."
+                "subtitle": "Suscríbete para más lecciones de DevOps y Kubernetes",
+                "githubRepo": "github.com/Medalcode/canal-tutorial-automation",
+                "speechText": "¡Y listo! Tu aplicación está contenida. Suscríbete para más tutoriales de DevOps."
             }
         ]
-    else:
+    elif domain == "react_web":
         scenes = [
             {
                 "id": "scene-1-intro",
                 "type": "intro",
                 "title": title_clean,
-                "subtitle": "Guía Paso a Paso para Desarrolladores",
-                "requirements": ["Entorno de Desarrollo", "Terminal de Comandos", "Visual Studio Code"],
-                "speechText": f"Bienvenidos a este tutorial completo sobre {title_clean}. Hoy aprenderemos las mejores prácticas para estructurar e implementar esta solución desde cero."
+                "subtitle": "Desarrollo Web Moderno con React & Node.js",
+                "requirements": ["Node.js v20+", "VS Code & Terminal", "Navegador Web"],
+                "speechText": f"Bienvenidos a esta guía sobre {title_clean}. Construiremos una aplicación web completa desde la estructura de archivos hasta su ejecución en el navegador."
             },
             {
-                "id": "scene-2-diagram",
-                "type": "diagram",
-                "title": "Flujo de Ejecución del Sistema",
-                "nodes": ["Entrada de Datos", "Módulo Central de Lógica", "Capa de Validación", "Resultado de Salida"],
-                "speechText": "Analicemos primero el diseño conceptual de la solución para comprender cómo fluye la información entre cada componente."
+                "id": "scene-2-explorer",
+                "type": "file_explorer",
+                "projectName": "app-web-react",
+                "files": [
+                    { "name": "src/", "type": "folder", "active": True },
+                    { "name": "  components/", "type": "folder", "active": False },
+                    { "name": "    Header.tsx", "type": "file", "active": False },
+                    { "name": "    Dashboard.tsx", "type": "file", "active": False },
+                    { "name": "  App.tsx", "type": "file", "active": True },
+                    { "name": "  main.tsx", "type": "file", "active": False },
+                    { "name": "package.json", "type": "file", "active": False },
+                ],
+                "activeFileDetails": {
+                    "name": "App.tsx",
+                    "path": "src/App.tsx",
+                    "size": "2.8 KB",
+                    "lines": 85
+                },
+                "speechText": "En el explorador de archivos organizamos nuestros componentes de React e interfaces dentro de la carpeta fuente."
             },
             {
                 "id": "scene-3-setup",
                 "type": "terminal",
-                "title": "Configuración del Proyecto",
+                "title": "Instalación de Dependencias Web",
+                "terminalPrompt": "user@laptop:~/app-web$",
+                "commands": [
+                    { "text": "npx create-react-app app-demo --template typescript" },
+                    { "text": "npm start", "output": ["Compiled successfully!", "Local: http://localhost:3000"] }
+                ],
+                "speechText": "Abrimos la terminal de comandos para inicializar la aplicación con TypeScript e iniciar el servidor de desarrollo en el puerto 3000."
+            },
+            {
+                "id": "scene-4-editor",
+                "type": "editor",
+                "filename": "App.tsx",
+                "codeLines": [
+                    "import React, { useState } from 'react';",
+                    "",
+                    "export const App = () => {",
+                    "  const [active, setActive] = useState(true);",
+                    "",
+                    "  return (",
+                    "    <div className='dashboard-container'>",
+                    "      <h1>Sistema de Monitoreo Web</h1>",
+                    "      <button onClick={() => setActive(!active)}>Toggle Estado</button>",
+                    "    </div>",
+                    "  );",
+                    "};"
+                ],
+                "speechText": "Escribimos el componente principal en VS Code gestionando el estado con react hooks y estilos responsivos."
+            },
+            {
+                "id": "scene-5-browser",
+                "type": "browser",
+                "url": "http://localhost:3000",
+                "title": "Navegador Web — Aplicación en Vivo",
+                "contentType": "webpage",
+                "mainContent": "🚀 Aplicación React Desplegada y Funcionando",
+                "speechText": "Abrimos el navegador web en localhost:3000. Observamos nuestra aplicación web renderizada e interactiva."
+            },
+            {
+                "id": "scene-6-http",
+                "type": "http-client",
+                "method": "GET",
+                "url": "http://localhost:3000/api/status",
+                "statusCode": 200,
+                "responseBody": "{\n  \"status\": \"online\",\n  \"latency_ms\": 12,\n  \"users_connected\": 42\n}",
+                "speechText": "Probamos la respuesta del backend conectándonos a la API REST e inspeccionando el JSON de salida."
+            },
+            {
+                "id": "scene-7-outro",
+                "type": "outro",
+                "title": "¡Aplicación Web Lista!",
+                "subtitle": "Suscríbete para ver la lección de despliegue en la nube",
+                "githubRepo": "github.com/Medalcode/canal-tutorial-automation",
+                "speechText": "¡Y listo! Tu interfaz web está funcionando. Suscríbete para más contenido de frontend y backend."
+            }
+        ]
+    else:
+        # Dominio general rico (7 escenas)
+        scenes = [
+            {
+                "id": "scene-1-intro",
+                "type": "intro",
+                "title": title_clean,
+                "subtitle": "Tutorial Paso a Paso para Desarrolladores",
+                "requirements": ["Entorno de Desarrollo", "Terminal de Comandos", "Visual Studio Code"],
+                "speechText": f"Bienvenidos a esta guía sobre {title_clean}. Veremos los componentes principales y herramientas necesarias paso a paso."
+            },
+            {
+                "id": "scene-2-explorer",
+                "type": "file_explorer",
+                "projectName": "proyecto-demo",
+                "files": [
+                    { "name": "src/", "type": "folder", "active": False },
+                    { "name": "  main.js", "type": "file", "active": True },
+                    { "name": "Dockerfile", "type": "file", "active": False },
+                    { "name": "package.json", "type": "file", "active": False },
+                ],
+                "activeFileDetails": {
+                    "name": "main.js",
+                    "path": "src/main.js",
+                    "size": "2.1 KB",
+                    "lines": 60
+                },
+                "speechText": "Revisamos la arquitectura del proyecto en el explorador de archivos con la estructura modular preparada."
+            },
+            {
+                "id": "scene-3-diagram",
+                "type": "diagram",
+                "title": "Arquitectura y Componentes",
+                "nodes": ["Cliente Web", "API Backend", "Base de Datos"],
+                "speechText": "En este diagrama observamos la interacción conceptual entre el cliente web, la API y la base de datos."
+            },
+            {
+                "id": "scene-4-setup",
+                "type": "terminal",
+                "title": "Consola de Comandos",
                 "terminalPrompt": "user@laptop:~/proyecto$",
                 "commands": [
                     { "text": "mkdir proyecto-demo && cd proyecto-demo" },
                     { "text": "git init", "output": ["Initialized empty Git repository in /proyecto-demo/.git/"] }
                 ],
-                "speechText": "Comenzamos abriendo nuestra terminal para inicializar el repositorio y preparar la estructura del proyecto."
+                "speechText": "En la consola ejecutamos los comandos de inicialización del proyecto y control de versiones."
             },
             {
-                "id": "scene-4-editor",
+                "id": "scene-5-editor",
                 "type": "editor",
                 "filename": "main.js",
                 "codeLines": [
-                    "// Implementación principal de " + title_clean,
-                    "function initApplication() {",
-                    "    console.log('Inicializando sistema...');",
-                    "    return { status: 'success', timestamp: Date.now() };",
+                    "// Implementación principal para " + title_clean,
+                    "function initSystem() {",
+                    "    console.log('Sistema iniciado con éxito');",
+                    "    return { status: 'ok', timestamp: Date.now() };",
                     "}",
                     "",
-                    "module.exports = { initApplication };"
+                    "module.exports = { initSystem };"
                 ],
-                "speechText": "En el editor desarrollamos el código limpio aplicando modularidad, buenas prácticas de naming y manejo de estado."
+                "speechText": "En el editor de código desarrollamos la función principal con estándares de código limpio."
             },
             {
-                "id": "scene-5-outro",
+                "id": "scene-6-analytics",
+                "type": "analytics_chart",
+                "title": "Panel de Control y Métricas",
+                "metrics": [
+                    { "label": "Estado", "value": "ACTIVO", "change": "OK" },
+                    { "label": "Rendimiento", "value": "99.8%", "change": "+ 2%" }
+                ],
+                "chartTitle": "Indicadores Clave del Sistema",
+                "speechText": "Verificamos los indicadores y métricas de ejecución en el panel de monitoreo."
+            },
+            {
+                "id": "scene-7-outro",
                 "type": "outro",
                 "title": "¡Proyecto Completado!",
-                "subtitle": "Suscríbete para ver la siguiente lección en video",
+                "subtitle": "Suscríbete y activa la campanita para más tutoriales",
                 "githubRepo": "github.com/Medalcode/canal-tutorial-automation",
-                "speechText": "Y así concluimos esta lección. Si te ha resultado útil, no olvides darle un me gusta y suscribirte al canal."
+                "speechText": "Hemos finalizado el proyecto. Si te ha gustado, suscríbete al canal y dale un me gusta."
             }
         ]
 
@@ -212,8 +397,9 @@ def generate_ai_script(idea: str, target_length: str = "standard") -> Dict[str, 
 
     if gemini_key:
         try:
-            prompt_text = f"""Genera un guion detallado y rico para un video tutorial basado en la siguiente idea: "{idea}".
-Debes devolver UNICAMENTE un objeto JSON válido con la siguiente estructura (sin formato de markdown, sin ```json):
+            prompt_text = f"""Genera un guion muy rico, variado y completo (entre 7 y 10 escenas) para un video tutorial basado en: "{idea}".
+Utiliza variedad de tipos de escenas como: "intro", "file_explorer", "terminal", "editor", "browser", "excel", "analytics_chart", "diagram", "features", "outro".
+Debes devolver UNICAMENTE un objeto JSON válido (sin ```json):
 {{
   "title": "Título atractivo sobre {idea}",
   "subtitle": "Subtítulo explicativo paso a paso",
@@ -225,51 +411,62 @@ Debes devolver UNICAMENTE un objeto JSON válido con la siguiente estructura (si
       "title": "Introducción a {idea}",
       "subtitle": "Aprende los conceptos clave",
       "requirements": ["Requisito 1", "Requisito 2"],
-      "speechText": "Explicación detallada en español de al menos 3 oraciones completas sobre lo que se aprenderá..."
+      "speechText": "Explicación detallada de la lección..."
     }},
     {{
       "id": "scene-2",
-      "type": "diagram",
-      "title": "Arquitectura del Sistema",
-      "nodes": ["Componente A", "Componente B", "Componente C"],
-      "speechText": "Explicación detallada en español del diagrama de arquitectura..."
+      "type": "file_explorer",
+      "projectName": "proyecto-demo",
+      "files": [{{"name": "main.py", "type": "file", "active": true}}],
+      "activeFileDetails": {{"name": "main.py", "path": "main.py", "size": "2.4 KB", "lines": 50}},
+      "speechText": "Revisamos los archivos del proyecto..."
     }},
     {{
       "id": "scene-3",
       "type": "terminal",
-      "title": "Instalación de Dependencias",
-      "terminalPrompt": "user@laptop:~/proyecto$",
-      "commands": [
-        {{"text": "comando 1"}},
-        {{"text": "comando 2", "output": ["resultado"]}}
-      ],
-      "speechText": "Explicación detallada en español de los comandos..."
+      "title": "Comandos de Consola",
+      "commands": [{{"text": "comando 1"}}],
+      "speechText": "Ejecutamos en la consola..."
     }},
     {{
       "id": "scene-4",
       "type": "editor",
       "filename": "main.py",
-      "codeLines": [
-        "# Codigo principal especifico para " + idea,
-        "def main():",
-        "    pass"
-      ],
-      "speechText": "Explicación detallada en español del código escrito..."
+      "codeLines": ["# Codigo"],
+      "speechText": "Escribimos el código..."
     }},
     {{
       "id": "scene-5",
-      "type": "features",
-      "title": "Ventajas Clave",
-      "features": ["Ventaja 1", "Ventaja 2", "Ventaja 3"],
-      "speechText": "Explicación detallada en español de los beneficios..."
+      "type": "browser",
+      "url": "http://localhost:3000",
+      "title": "Navegador Web",
+      "mainContent": "Aplicación Funcional",
+      "speechText": "Vemos el resultado en el navegador..."
     }},
     {{
       "id": "scene-6",
+      "type": "excel",
+      "title": "Plantilla Excel",
+      "sheetName": "Reporte",
+      "formula": "=SUMA(A1:A5)",
+      "headers": ["Col 1", "Col 2"],
+      "rows": [["Dato 1", "Dato 2"]],
+      "speechText": "Analizamos la plantilla de Excel..."
+    }},
+    {{
+      "id": "scene-7",
+      "type": "analytics_chart",
+      "title": "Dashboard Power BI",
+      "metrics": [{{"label": "Ventas", "value": "$100K", "change": "+10%"}}],
+      "speechText": "Inspeccionamos los gráficos de analítica..."
+    }},
+    {{
+      "id": "scene-8",
       "type": "outro",
-      "title": "¡Proyecto Completado!",
-      "subtitle": "Suscríbete para ver la siguiente lección",
+      "title": "¡Fin del Tutorial!",
+      "subtitle": "Suscríbete",
       "githubRepo": "github.com/usuario/repo",
-      "speechText": "Palabras finales de despedida e invitación a suscribirse..."
+      "speechText": "Gracias por ver el video..."
     }}
   ]
 }}"""
@@ -287,5 +484,5 @@ Debes devolver UNICAMENTE un objeto JSON válido con la siguiente estructura (si
         except Exception as e:
             logger.error(f"Error al llamar a Gemini: {e}")
 
-    # Fallback inteligente multidominio
+    # Fallback inteligente multidominio con 7-8 escenas ricas
     return generate_multidomain_script(idea, target_length)
