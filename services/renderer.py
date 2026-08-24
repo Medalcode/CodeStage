@@ -76,8 +76,9 @@ class RemotionRendererService:
             else:
                 cmd = ["npx", "remotion", "render", composition_id, str(output_path)]
 
-            if props_file_path and Path(props_file_path).exists():
-                cmd.append(f"--props={str(props_file_path)}")
+            if props_file_path:
+                props_abs = Path(props_file_path).resolve()
+                cmd.append(f"--props={str(props_abs)}")
 
             process = await asyncio.create_subprocess_exec(
                 *cmd,
