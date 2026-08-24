@@ -22,7 +22,7 @@ from services.renderer import RemotionRendererService
 
 logger = get_logger("server")
 
-PORT = 5000
+PORT = int(os.environ.get("PORT", 5000))
 BASE_DIR = Path(__file__).parent.resolve()
 REMOTION_DIR = BASE_DIR / "remotion-app"
 SCRIPT_JSON_PATH = REMOTION_DIR / "src" / "data" / "current_script.json"
