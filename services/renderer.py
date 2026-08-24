@@ -15,7 +15,7 @@ from utils import ensure_dir, get_rhubarb_path
 
 logger = get_logger("services.renderer")
 
-class RemotionRendererService:
+class PythonSpriteCompositorRendererService:
     """
     Servicio de renderizado nativo en Python 40/60 Split-Screen.
     Combina Avatar 2D animado a la izquierda (40%) con un Canvas dinámico en la derecha (60%).
@@ -282,3 +282,6 @@ class RemotionRendererService:
                 await on_progress(self.status)
 
         return self.status
+
+# Alias polimórfico para 100% retrocompatibilidad con la API
+RemotionRendererService = PythonSpriteCompositorRendererService
