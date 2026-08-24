@@ -34,18 +34,21 @@ renderer_service = RemotionRendererService(
     output_dir=OUTPUT_VIDEOS_DIR
 )
 
-app = FastAPI(
-    title="AI Video Studio API",
-    description="API REST y WebSockets para automatización de videos con Remotion e IA",
-    version="2.0.0"
-)
+from contextlib import asynccontextmanager
 
-# Initialize SQLite database on startup
-@app.on_event("startup")
-def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     database.init_db()
     OUTPUT_VIDEOS_DIR.mkdir(parents=True, exist_ok=True)
-    logger.info("Base de datos SQLite studio.db y directorio output_videos/ inicializados.")
+    logger.info("Base de datos SQLite studio.db y directorio output_videos/ inicializados con Lifespan API.")
+    yield
+
+app = FastAPI(
+    title="AI Video Studio API",
+    description="API REST y WebSockets para automatización de videos con IA",
+    version="2.0.0",
+    lifespan=lifespan
+)
 
 # CORS Middleware
 app.add_middleware(

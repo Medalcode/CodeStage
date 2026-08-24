@@ -15,7 +15,7 @@ from utils import ensure_dir
 
 logger = get_logger("services.renderer")
 
-class RemotionRendererService:
+class VsCodePuristRendererService:
     """
     Servicio de renderizado Simulador Purista de VS Code IDE.
     Renderiza a pantalla completa (1920x1080) un editor VS Code con tipeo en vivo por IA,
@@ -214,3 +214,6 @@ class RemotionRendererService:
                 await on_progress(self.status)
 
         return self.status
+
+# Alias polimórfico para 100% retrocompatibilidad con la API
+RemotionRendererService = VsCodePuristRendererService
