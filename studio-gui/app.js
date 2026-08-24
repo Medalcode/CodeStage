@@ -161,6 +161,19 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open('/docs', '_blank');
   });
 
+  // Unified Engine Switcher Dropdown
+  const engineSwitcherSelect = document.getElementById('engine-switcher-select');
+  if (engineSwitcherSelect) {
+    const currentPort = window.location.port || '5000';
+    engineSwitcherSelect.value = currentPort;
+    engineSwitcherSelect.addEventListener('change', (e) => {
+      const targetPort = e.target.value;
+      if (targetPort !== currentPort) {
+        window.location.href = `${window.location.protocol}//${window.location.hostname}:${targetPort}/`;
+      }
+    });
+  }
+
   function renderScriptPreview(script) {
     if (!script.scenes || script.scenes.length === 0) {
       scriptPreviewContainer.innerHTML = `
