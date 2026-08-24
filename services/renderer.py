@@ -252,14 +252,26 @@ class PythonSpriteCompositorRendererService:
                 await on_progress(self.status)
 
             final_video = concatenate_videoclips(clips)
-            final_video.write_videofile(
-                str(output_path),
-                fps=24,
-                codec="libx264",
-                audio_codec="aac",
-                logger=None
-            )
-            final_video.close()
+            temp_audio = str(self.output_dir / f"temp_audio_{int(time.time())}.m4a")
+            try:
+                final_video.write_videofile(
+                    str(output_path),
+                    fps=24,
+                    codec="libx264",
+                    audio_codec="aac",
+                    temp_audiofile=temp_audio,
+                    remove_temp=True,
+                    logger=None
+                )
+            except Exception as render_err:
+                logger.warning(f"Aviso en guardado de video MoviePy: {render_err}")
+                if not output_path.exists() or output_path.stat().st_size == 0:
+                    raise render_err
+
+            try:
+                final_video.close()
+            except Exception:
+                pass
 
             for c in clips:
                 try:
