@@ -1,79 +1,63 @@
 # 03 SCENE ENGINE
 
 ## 1. Concept
-The Scene Engine defines the canonical data structure for CodeStage. A script is a collection of scenes.
+The Scene Engine defines the declarative structure of a video. 
+Instead of rigid structures where a Scene explicitly has an `Avatar` and an `IDE`, we use a flexible `Layer/Element` model.
 
-## 2. Data Models (Pydantic representation)
+## 2. Data Models (Pydantic)
 
 ### 2.1. Script
 - `title` (str)
-- `global_settings` (dict): e.g., default voice, resolution.
 - `scenes` (List[Scene])
 
 ### 2.2. Scene
-A scene represents a discrete segment of the video with a single continuous narration and layout.
+A discrete timeline block.
 - `id` (str)
-- `narration` (Narration)
-- `layout` (Enum): `split_screen`, `full_ide`, `full_avatar`.
-- `avatar` (Optional[AvatarAction])
-- `ide` (Optional[IDEAction])
+- `audio_track` (List[AudioElement]) -> Primarily Narration.
+- `visual_layers` (List[VisualElement]) -> Ordered by Z-Index.
 
-### 2.3. Narration
+### 2.3. Audio Elements
+#### NarrationElement
 - `text` (str)
-- `voice_override` (Optional[str])
+- `voice_id` (str)
 
-### 2.4. AvatarAction
-- `provider` (str): e.g., `h3max`, `sadtalker`
-- `pose` (Enum): `idle`, `typing`, `explaining`
-- `look` (Enum): `camera`, `screen`
+### 2.4. Visual Elements
 
-### 2.5. IDEAction
-Can be one of several subtypes:
+All Visual Elements share base properties:
+- `layout_position` (e.g., "left_half", "full_screen", "picture_in_picture")
 
-#### EditorAction
+#### AvatarElement
+- `pose` (str)
+- `look_target` (str)
+- `sync_with_audio` (bool) -> If true, syncs with the `audio_track` narration.
+
+#### IDEElement
 - `file_path` (str)
-- `content` (str)
-- `action` (Enum): `type_all`, `highlight_line`, `replace`
+- `code_content` (str)
+- `action` (str) -> e.g., "type", "highlight"
 
-#### TerminalAction
+#### TerminalElement
 - `command` (str)
 - `output` (str)
-
-#### BrowserAction
-- `url` (str)
-- `action` (Enum): `load`, `scroll`
 
 ## 3. YAML Example
 
 ```yaml
-title: "Hello World Python"
+title: "Docker Tutorial"
 scenes:
-  - id: "scene-1-intro"
-    layout: split_screen
-    narration:
-      text: "Hola, vamos a escribir nuestro primer script en Python."
-    avatar:
-      provider: h3max
-      pose: explaining
-      look: camera
-    ide:
-      type: editor
-      file_path: "main.py"
-      content: ""
-      
-  - id: "scene-2-code"
-    layout: split_screen
-    narration:
-      text: "Simplemente usamos la función print."
-    avatar:
-      provider: h3max
-      pose: typing
-      look: screen
-    ide:
-      type: editor
-      file_path: "main.py"
-      action: type_all
-      content: |
-        def main():
-            print("Hello World")
+  - id: "scene-1"
+    audio_track:
+      - type: narration
+        text: "Vamos a crear nuestro Dockerfile."
+    visual_layers:
+      - type: avatar
+        pose: explaining
+        look_target: camera
+        layout_position: right_half
+        sync_with_audio: true
+      - type: ide
+        file_path: "Dockerfile"
+        code_content: "FROM ubuntu:latest"
+        action: type
+        layout_position: left_half
 ```
